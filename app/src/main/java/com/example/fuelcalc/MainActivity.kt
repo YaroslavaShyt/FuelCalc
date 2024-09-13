@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import com.example.fuelcalc.fuel.FuelView
 
 import com.example.fuelcalc.fuel.FuelViewModel
+import com.example.fuelcalc.oilFuel.OilFuelViewModel
 import com.example.fuelcalc.ui.theme.FuelCalcTheme
 
 class MainActivity : ComponentActivity() {
@@ -15,7 +16,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FuelCalcTheme {
-                FuelView(FuelViewModel())
+                FuelView(FuelViewModel(), OilFuelViewModel())
             }
         }
     }
