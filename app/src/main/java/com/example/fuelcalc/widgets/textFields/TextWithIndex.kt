@@ -1,4 +1,4 @@
-package com.example.fuelcalc.widgets
+package com.example.fuelcalc.widgets.textFields
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.offset

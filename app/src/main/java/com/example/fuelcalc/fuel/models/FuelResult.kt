@@ -1,4 +1,4 @@
-package com.example.fuelcalc.fuel
+package com.example.fuelcalc.fuel.models
 
 data class FuelResult(
     val coeffOfTransFromWorkingToDryMass: Double = 0.0,

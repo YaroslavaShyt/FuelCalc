@@ -1,4 +1,4 @@
-package com.example.fuelcalc.oilFuel
+package com.example.fuelcalc.oilFuel.models
 
 data class OilFuel (
     val C: Double = 0.0,

@@ -1,4 +1,4 @@
-package com.example.fuelcalc.widgets
+package com.example.fuelcalc.widgets.calculator
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -13,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,7 +32,6 @@ fun RoundCalculatorButton(
         Box(
             modifier = Modifier
                 .size(85.dp)
-               // .shadow(if (isPressed) 2.dp else 8.dp, shape = CircleShape)
                 .background(if (isPressed) pressedColor else color, CircleShape)
                 .border(BorderStroke(1.dp, Color.LightGray), shape = CircleShape)
                 .clickable(

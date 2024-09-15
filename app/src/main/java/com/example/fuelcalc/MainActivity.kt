@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -22,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,9 +29,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 import com.example.fuelcalc.fuel.FuelViewModel
-import com.example.fuelcalc.fuel.TabOne
+import com.example.fuelcalc.fuel.widgets.TabOne
 import com.example.fuelcalc.oilFuel.OilFuelViewModel
-import com.example.fuelcalc.oilFuel.TabTwo
+import com.example.fuelcalc.oilFuel.widgets.TabTwo
 import com.example.fuelcalc.ui.theme.FuelCalcTheme
 
 class MainActivity : ComponentActivity() {
@@ -42,7 +40,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FuelCalcTheme {
-                FuelView(FuelViewModel(), OilFuelViewModel())
+                MainView(FuelViewModel(), OilFuelViewModel())
             }
         }
     }
@@ -51,10 +49,8 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun FuelView(fuelViewModel: FuelViewModel, oilFuelViewModel: OilFuelViewModel) {
+fun MainView(fuelViewModel: FuelViewModel, oilFuelViewModel: OilFuelViewModel) {
     val scrollState = rememberScrollState()
-    val tabs = listOf("Паливо", "Мазут", )
-    val coroutineScope = rememberCoroutineScope()
     var selectedTabIndex by  remember {mutableIntStateOf(0)}
     Scaffold(
         modifier = Modifier
@@ -68,10 +64,8 @@ fun FuelView(fuelViewModel: FuelViewModel, oilFuelViewModel: OilFuelViewModel) {
                 .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(10.dp))
-
             TabRow(selectedTabIndex = selectedTabIndex, indicator = { tabPositions ->
-                TabRowDefaults.Indicator(
+                TabRowDefaults.SecondaryIndicator(
                     modifier = Modifier
                         .tabIndicatorOffset(tabPositions[selectedTabIndex]),
                     color = Color.Cyan.copy(alpha = 0.5f)
@@ -98,6 +92,12 @@ fun FuelView(fuelViewModel: FuelViewModel, oilFuelViewModel: OilFuelViewModel) {
     }
 }
 
-
+@Preview(showBackground = true)
+@Composable
+fun GreetingPreview() {
+    FuelCalcTheme {
+        MainView(FuelViewModel(), OilFuelViewModel())
+    }
+}
 
 

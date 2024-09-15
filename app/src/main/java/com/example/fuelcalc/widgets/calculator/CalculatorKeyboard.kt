@@ -1,4 +1,4 @@
-package com.example.fuelcalc.widgets
+package com.example.fuelcalc.widgets.calculator
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,39 +14,22 @@ fun CalculatorKeyboard(onButtonClick: (String) -> Unit, onEqualsClick: () -> Uni
             RoundCalculatorButton(text = "3", onClick = {onButtonClick("3")})
         }
         Row {
-            RoundCalculatorButton(text = "4") {
-
-            }
-            RoundCalculatorButton(text = "5") {
-
-            }
-            RoundCalculatorButton(text = "6") {
-
-            }
+            RoundCalculatorButton(text = "4", onClick = {onButtonClick("4")})
+            RoundCalculatorButton(text = "5", onClick = {onButtonClick("5")})
+            RoundCalculatorButton(text = "6", onClick = {onButtonClick("6")})
         }
         Row {
-            RoundCalculatorButton(text = "7") {
-
-            }
-            RoundCalculatorButton(text = "8") {
-
-            }
-            RoundCalculatorButton(text = "9") {
-
-            }
+            RoundCalculatorButton(text = "7", onClick = {onButtonClick("7")})
+            RoundCalculatorButton(text = "8", onClick = {onButtonClick("8")})
+            RoundCalculatorButton(text = "9", onClick = {onButtonClick("9")})
         }
         Row {
-            RoundCalculatorButton(text = "0") {
-
-            }
-            RoundCalculatorButton(text = ".") {
-
-            }
+            RoundCalculatorButton(text = "0", onClick = {onButtonClick("0")})
+            RoundCalculatorButton(text = ".", onClick = {onButtonClick(".")})
             RoundCalculatorButton(text = "=",
                 color = Color.Cyan.copy(alpha = 0.5f), pressedColor = Color.Magenta,
                 onClick = onEqualsClick,
                 )
-
             }
         }
     }

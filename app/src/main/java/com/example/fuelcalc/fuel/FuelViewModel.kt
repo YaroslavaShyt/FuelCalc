@@ -1,81 +1,75 @@
 package com.example.fuelcalc.fuel
 
+import com.example.fuelcalc.fuel.models.Fuel
+import com.example.fuelcalc.fuel.models.FuelResult
+
 
 class FuelViewModel {
-    val fuelControlExample: Fuel = Fuel(21.1, 1.9, 2.6, 7.1, 0.2, 14.1, 53.0,)
-    val fuelVariantData: Fuel = Fuel(76.4, 1.5, 1.7, 1.3, 1.3, 13.3, 5.0,)
+    val fuelControlExample = Fuel(21.1, 1.9, 2.6, 7.1, 0.2, 14.1, 53.0)
+    val fuelVariantData = Fuel(76.4, 1.5, 1.7, 1.3, 1.3, 13.3, 5.0)
 
+    fun countResult(fuel: Fuel): FuelResult {
+        val dryMassCoeff = countDryMassCoeff(fuel.W)
+        val combMassCoeff = countCombMassCoeff(fuel.W, fuel.A)
 
-    fun countResult(
-        fuel: Fuel
-    ) : FuelResult {
-        val coeffOfTransFromWorkingToDryMass = countCoefficientOfTransFromWorkingToDryMass(fuel.W)
-        val coeffOfTransFromWorkingToCombMass = countCoefficientOfTransFromWorkingToCombustibleMass(fuel.W, fuel.A)
+        val dryComponents = applyCoeffToComponents(fuel, dryMassCoeff)
+        val combComponents = applyCoeffToComponents(fuel, combMassCoeff)
 
-        val H_c = multiplyComponentsByCoeffOfTransFromWorkingToDryMass(fuel.H, coeffOfTransFromWorkingToDryMass)
-        val C_c = multiplyComponentsByCoeffOfTransFromWorkingToDryMass(fuel.C, coeffOfTransFromWorkingToDryMass)
-        val S_c = multiplyComponentsByCoeffOfTransFromWorkingToDryMass(fuel.S, coeffOfTransFromWorkingToDryMass)
-        val N_c = multiplyComponentsByCoeffOfTransFromWorkingToDryMass(fuel.N, coeffOfTransFromWorkingToDryMass)
-        val O_c = multiplyComponentsByCoeffOfTransFromWorkingToDryMass(fuel.O, coeffOfTransFromWorkingToDryMass)
-        val A_c = multiplyComponentsByCoeffOfTransFromWorkingToDryMass(fuel.A, coeffOfTransFromWorkingToDryMass)
-        val checkSum1 = H_c + C_c + S_c + N_c + O_c + A_c
+        val dryCheckSum = dryComponents.H + dryComponents.C + dryComponents.S +
+                dryComponents.N + dryComponents.O + dryComponents.A
 
-        val H_b = multiplyComponentsByCoeffOfTransFromWorkingToCombMass(fuel.H, coeffOfTransFromWorkingToCombMass)
-        val C_b = multiplyComponentsByCoeffOfTransFromWorkingToCombMass(fuel.C, coeffOfTransFromWorkingToCombMass)
-        val S_b = multiplyComponentsByCoeffOfTransFromWorkingToCombMass(fuel.S, coeffOfTransFromWorkingToCombMass)
-        val N_b = multiplyComponentsByCoeffOfTransFromWorkingToCombMass(fuel.N, coeffOfTransFromWorkingToCombMass)
-        val O_b = multiplyComponentsByCoeffOfTransFromWorkingToCombMass(fuel.O, coeffOfTransFromWorkingToCombMass)
+        val combCheckSum = combComponents.H + combComponents.C + combComponents.S +
+                combComponents.N + combComponents.O
 
-        val checkSum2 = H_b + C_b + S_b + N_b + O_b
+        val lowerHeatCombustion = countLowerHeatOfCombustion(fuel) / 1000
+        val dryMass = countAdjustedMass(lowerHeatCombustion, fuel.W, dryMassCoeff)
+        val combustionMass = countAdjustedMass(lowerHeatCombustion, fuel.W, combMassCoeff)
 
-        val lowerHeatOfCombustion = countLowerHeatOfCombustion(fuel.C, fuel.H, fuel.O, fuel.S, fuel.W,) / 1000
-
-        val dryMass = countDryMass(lowerHeatOfCombustion, fuel.W, coeffOfTransFromWorkingToDryMass)
-        val combustionMass = countCombustibleMass(lowerHeatOfCombustion, fuel.W, coeffOfTransFromWorkingToCombMass )
-
-        return FuelResult(coeffOfTransFromWorkingToDryMass,
-            coeffOfTransFromWorkingToCombMass,
-            Fuel(C_c, H_c, S_c, O_c, N_c, A_c),
-            checkSum1,
-            Fuel(C_b, H_b, S_b, O_b, N_b,),
-            checkSum2,
-            lowerHeatOfCombustion ,
+        return FuelResult(
+            dryMassCoeff,
+            combMassCoeff,
+            Fuel(
+                dryComponents.C,
+                dryComponents.H,
+                dryComponents.S,
+                dryComponents.O,
+                dryComponents.N,
+                dryComponents.A,
+            ),
+            dryCheckSum,
+            Fuel(
+                combComponents.C,
+                combComponents.H,
+                combComponents.S,
+                combComponents.O,
+                combComponents.N,
+            ),
+            combCheckSum,
+            lowerHeatCombustion,
             dryMass,
             combustionMass
-            )
-
+        )
     }
 
+    private fun countDryMassCoeff(W: Double) = 100 / (100 - W)
 
-    private fun countCoefficientOfTransFromWorkingToDryMass(W: Double): Double {
-        return 100 / (100 - W)
+    private fun countCombMassCoeff(W: Double, A: Double) = 100 / (100 - W - A)
+
+    private fun applyCoeffToComponents(fuel: Fuel, coeff: Double) = Fuel(
+        fuel.C * coeff,
+        fuel.H * coeff,
+        fuel.S * coeff,
+        fuel.N * coeff,
+        fuel.O * coeff,
+        fuel.A * coeff
+    )
+
+    private fun countLowerHeatOfCombustion(fuel: Fuel): Double {
+        return 339 * fuel.C + 1030 * fuel.H - 108.8 * (fuel.O - fuel.S) - 25 * fuel.W
     }
 
-    private fun countCoefficientOfTransFromWorkingToCombustibleMass(W: Double, A: Double): Double {
-        return 100 / (100 - W - A)
-
+    private fun countAdjustedMass(lowerHeatCombustion: Double, W: Double, coeff: Double): Double {
+        return (lowerHeatCombustion + 0.025 * W) * coeff
     }
-
-    private fun multiplyComponentsByCoeffOfTransFromWorkingToDryMass(component: Double, coefficientOfTransFromWorkingToDryMass: Double): Double {
-        return component * coefficientOfTransFromWorkingToDryMass
-    }
-
-    private fun multiplyComponentsByCoeffOfTransFromWorkingToCombMass(component: Double, coeffOfTransFromWorkingToCombMass: Double): Double {
-        return component * coeffOfTransFromWorkingToCombMass
-    }
-
-    private fun countLowerHeatOfCombustion(C: Double, H: Double, O: Double, S: Double, W: Double): Double {
-        return 339 * C + 1030 * H - 108.8 * (O - S) - 25 * W
-    }
-
-    private fun countDryMass(lowerHeatOfCombustion: Double, W: Double, coefficientOfTransFromWorkingToDryMass: Double): Double {
-        return (lowerHeatOfCombustion + 0.025 * W) * coefficientOfTransFromWorkingToDryMass
-    }
-
-    private fun countCombustibleMass(lowerHeatOfCombustion: Double, W: Double, coefficientOfTransFromWorkingToConsumbMass: Double): Double {
-        return (lowerHeatOfCombustion + 0.025 * W) * coefficientOfTransFromWorkingToConsumbMass
-    }
-
-
-
 }
+
